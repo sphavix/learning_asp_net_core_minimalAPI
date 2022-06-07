@@ -11,8 +11,8 @@ using learning_asp_net_core_minimalAPI.Models;
 namespace learning_asp_net_core_minimalAPI.Migrations
 {
     [DbContext(typeof(ActivityDbContext))]
-    [Migration("20220607103937_initialdb")]
-    partial class initialdb
+    [Migration("20220607184117_MoveDbToSQLServer")]
+    partial class MoveDbToSQLServer
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -4,7 +4,7 @@
 
 namespace learning_asp_net_core_minimalAPI.Migrations
 {
-    public partial class initialdb : Migration
+    public partial class MoveDbToSQLServer : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
