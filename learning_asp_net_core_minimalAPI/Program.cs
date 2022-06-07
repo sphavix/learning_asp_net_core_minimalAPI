@@ -1,9 +1,10 @@
+using learning_asp_net_core_minimalAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Dependency Injection Container
-builder.Services.AddDbContext<ActivityDbContext>(opt => opt.UseInMemoryDatabase("EmployeeD"));
+builder.Services.AddDbContext<ActivityDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("EmployeeD")));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
@@ -27,7 +28,7 @@ await db.Activities.FindAsync(id)
 
 //Post Activity
 app.MapPost("/todoitems", async (Activity activity, ActivityDbContext db) =>
-    {
+{
     db.Activities.Add(activity);
     await db.SaveChangesAsync();
 });
@@ -62,20 +63,4 @@ app.MapDelete("/todoitems/{id}", async (int id, ActivityDbContext db) =>
 
 app.Run();
 
-class Activity
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public bool IsComplete { get; set; }
-}
 
-class ActivityDbContext : DbContext
-{
-    public ActivityDbContext(DbContextOptions<ActivityDbContext> options) :
-        base(options)
-    {
-
-    }
-
-    public DbSet<Activity> Activities => Set<Activity>();
-}
