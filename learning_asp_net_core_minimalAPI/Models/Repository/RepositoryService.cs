@@ -28,18 +28,19 @@
           
         }
 
-        public List<Activity> GetCompletedActivity()
+        public IEnumerable<Activity> GetCompletedActivity()
         {
             return _context.Activities.Where(x => x.IsComplete).ToList();
         }
 
-        public List<Activity> GetAllActivities()
+        public IEnumerable<Activity> GetAllActivities()
         {
             return _context.Activities.ToList();
         }
 
-        public void UpdateActivity(Activity activity)
+        public void UpdateActivity(int? id, Activity activity)
         {
+            if(id != null)
             _context.Activities.Update(activity);
             _context.SaveChanges();
         }

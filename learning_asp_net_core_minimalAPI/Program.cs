@@ -33,9 +33,9 @@ app.MapPost("/todoitems", (Activity activity, [FromServices] IRepositoryService 
 });
 
 //Put Activity
-app.MapPut("/todoitems/{id}", (Activity activity, [FromServices] IRepositoryService db) =>
+app.MapPut("/todoitems/{id}", (int id, Activity activity, [FromServices] IRepositoryService db) =>
 {
-    db.UpdateActivity(activity);
+    db.UpdateActivity(id, activity);
 });
 
 //Delete Activity
