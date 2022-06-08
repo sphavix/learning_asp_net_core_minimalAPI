@@ -10,20 +10,30 @@ builder.Services.AddDbContext<ActivityDbContext>(opt => opt.UseSqlServer(builder
 builder.Services.AddScoped<IRepositoryService, RepositoryService>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
+app.UseSwaggerUI();
 
 
 app.MapGet("/", () => "Hello World!");
 
-app.MapGet("/todoitems", ([FromServices] IRepositoryService db) => db.GetAllActivities());
 
-app.MapGet("/todoitems/complete", ([FromServices] IRepositoryService db) => db.GetCompletedActivity());
-
-app.MapGet("/todoitems", (int id, [FromServices] IRepositoryService db) =>
+app.UseSwagger(x => x.SerializeAsV2 = true);
+app.MapGet("/todoitems", ([FromServices] IRepositoryService db) =>
 {
-    var activity = db.GetActivity(id);
+    return db.GetAllActivities();
+});
+
+app.MapGet("/todoitems/complete", ([FromServices] IRepositoryService db) =>
+{
+    return db.GetCompletedActivity();
+});
+
+app.MapGet("/todoitems/{id}", (int id, [FromServices] IRepositoryService db) =>
+{
+    return db.GetActivity(id);
 });
 
 //Post Activity
@@ -33,9 +43,9 @@ app.MapPost("/todoitems", (Activity activity, [FromServices] IRepositoryService 
 });
 
 //Put Activity
-app.MapPut("/todoitems/{id}", (int id, Activity activity, [FromServices] IRepositoryService db) =>
+app.MapPut("/todoitems/{id}", (Activity activity, [FromServices] IRepositoryService db) =>
 {
-    db.UpdateActivity(id, activity);
+    db.UpdateActivity(activity);
 });
 
 //Delete Activity

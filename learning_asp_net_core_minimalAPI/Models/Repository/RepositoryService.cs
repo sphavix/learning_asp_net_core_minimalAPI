@@ -1,4 +1,6 @@
-﻿namespace learning_asp_net_core_minimalAPI.Models.Repository
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace learning_asp_net_core_minimalAPI.Models.Repository
 {
     public class RepositoryService : IRepositoryService
     {
@@ -10,8 +12,15 @@
         }
         public void AddActivity(Activity activity)
         {
-            _context.Activities.Add(activity);
-            _context.SaveChanges();
+            using(var transaction = _context.Database.BeginTransaction())
+            {
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Activities ON;");
+                _context.Activities.Add(activity);
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Activities OFF;");
+                transaction.Commit();
+            }
+            
         }
 
         public void DeleteActivity(int id)
@@ -28,21 +37,34 @@
           
         }
 
-        public IEnumerable<Activity> GetCompletedActivity()
+        public List<Activity> GetCompletedActivity()
         {
             return _context.Activities.Where(x => x.IsComplete).ToList();
         }
 
-        public IEnumerable<Activity> GetAllActivities()
+        public List<Activity> GetAllActivities()
         {
             return _context.Activities.ToList();
         }
 
-        public void UpdateActivity(int? id, Activity activity)
+        public void UpdateActivity(Activity activity)
         {
-            if(id != null)
-            _context.Activities.Update(activity);
-            _context.SaveChanges();
+            using(var transaction = _context.Database.BeginTransaction())
+            {
+                var result = _context.Activities.FirstOrDefault(x => x.Id == activity.Id);
+                if(result != null)
+                {   
+                    result.Id = activity.Id;
+                    result.Name = activity.Name;
+                    result.IsComplete = activity.IsComplete;
+
+                    _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Activities ON;");
+                    _context.Update(result);
+                    _context.SaveChanges();
+                    _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Activities OFF;");
+                    transaction.Commit();
+                }
+            }
         }
     }
 }

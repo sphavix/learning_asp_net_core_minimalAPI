@@ -2,11 +2,11 @@
 {
     public interface IRepositoryService
     {
-        IEnumerable<Activity> GetAllActivities();
+        List<Activity> GetAllActivities();
         Activity GetActivity(int id);
-        IEnumerable<Activity> GetCompletedActivity();
+        List<Activity> GetCompletedActivity();
         void AddActivity(Activity activity);
-        void UpdateActivity(int id, Activity activity);
+        void UpdateActivity(Activity activity);
         void DeleteActivity(int id);
     }
 }
